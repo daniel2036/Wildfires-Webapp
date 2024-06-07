@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Display a map</title>
+    <meta property="og:description" content="Initialize a map in an HTML element with MapLibre GL JS." />
+    <meta charset='utf-8'>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel='stylesheet' href='https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.css' />
+    <script src='https://unpkg.com/maplibre-gl@4.3.2/dist/maplibre-gl.js'></script>
+    <style>
+        body { margin: 0; padding: 0; }
+        html, body, #map { height: 100%; }
+    </style>
+</head>
+<body>
+<div id="map"></div>
+<script>
+    const map = new maplibregl.Map({
+        container: 'map', // container id
+        style: 'https://api.maptiler.com/maps/streets/style.json?key=get_your_own_OpIi9ZULNHzrESv6T2vL', // style URL
+        center: [0, 0], // starting position [lng, lat]
+        zoom: 1, // starting zoom
+        maplibreLogo: true
+    });
+
+    map.on('load', function () {
+        map.addSource('wildfires', {
+            'type': 'vector',
+            'tiles':[
+                'http://localhost:7800/public.wildfires/{z}/{x}/{y}.pbf'
+            ],
+        'minzoom':0,
+        'maxzoom':22
+        });
+        map.addLayer({
+            'id': 'wildfire-data',
+            'type': 'circle',
+            'source': 'wildfires',
+            'source-layer': 'public.wildfires',
+
+            'paint': {
+                'circle-color': 'blue',
+                'circle-radius': 3
+            }
+        });
+    });
+</script>
+</body>
+</html>
